@@ -10,11 +10,14 @@ public class Corrutina : MonoBehaviour
     {
         StartCoroutine(W_Apagar());
     }
+
     IEnumerator W_Apagar()
     {
         miEsfera.SetActive(false);
         yield return new WaitForSeconds(tiempo);
         miEsfera .SetActive(true);
+
+
     }
 
 }
