@@ -7,7 +7,7 @@ public class BossController : MonoBehaviour
     public Transform player;
     public float detectionRange = 20f;
     public float attackRange = 3f;
-    public float specialAttackChance = 0.2f; // Probabilidad de ataques especiales
+    public float specialAttackChance = 0.2f;
     public int health = 500;
 
     private NavMeshAgent agent;
@@ -16,7 +16,7 @@ public class BossController : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        SetTrigger("baile"); // Animación inicial
+        SetTrigger("baile");
     }
 
     void Update()
@@ -36,7 +36,6 @@ public class BossController : MonoBehaviour
                 agent.isStopped = true;
                 isAttacking = true;
 
-                // Decidir entre ataques normales y especiales
                 if (Random.value < specialAttackChance)
                 {
                     SetTrigger(Random.value < 0.5f ? "swiping" : "jump_attack");
@@ -46,7 +45,7 @@ public class BossController : MonoBehaviour
                     SetTrigger("punch");
                 }
 
-                Invoke("ResetAttack", 2f); // Intervalo entre ataques
+                Invoke("ResetAttack", 2f);
             }
         }
     }

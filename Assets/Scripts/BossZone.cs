@@ -8,7 +8,6 @@ public class BossZone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Jugador detectado en la zona del Boss."); // Para confirmar
             bossController.SetTrigger("detectar");
         }
     }
