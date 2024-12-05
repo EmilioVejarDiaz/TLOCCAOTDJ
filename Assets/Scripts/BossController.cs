@@ -50,6 +50,26 @@ public class BossController : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+
+        if (health <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            SetTrigger("reaction");
+        }
+    }
+
+    private void Die()
+    {
+        animator.SetTrigger("muerte");
+        Destroy(gameObject, 3f);
+    }
+
     public void SetTrigger(string trigger)
     {
         ResetAllTriggers();
