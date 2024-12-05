@@ -35,7 +35,7 @@ public class EnemyController : MonoBehaviour
             {
                 agent.isStopped = false;
                 agent.SetDestination(player.position);
-                SetTrigger("correr");
+                SetTrigger("correr"); // No necesita reset
             }
             else if (distanceToPlayer <= attackRange && !isAttacking)
             {
@@ -44,16 +44,18 @@ public class EnemyController : MonoBehaviour
                 SetTrigger("atacar");
                 isAttacking = true;
                 EnableAttackCollider();
-                Invoke("DisableAttackCollider", 0.5f); // Desactivar collider después del ataque
+                Invoke("DisableAttackCollider", 0.5f);
                 Invoke("ResetAttack", 1.5f);
             }
         }
         else
         {
             agent.isStopped = true;
-            SetTrigger("reset");
+            SetTrigger("reset"); // Este reset es válido porque detiene cualquier acción.
         }
     }
+
+
 
     public void TakeDamage(int damage)
     {
@@ -82,10 +84,13 @@ public class EnemyController : MonoBehaviour
     {
         isDead = true;
         agent.isStopped = true;
+        agent.enabled = false;
+
         SetTrigger("muerte");
         Debug.Log("El enemigo ha muerto.");
         Destroy(gameObject, 3f);
     }
+
 
     private void ResetAttack()
     {

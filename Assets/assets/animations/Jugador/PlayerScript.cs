@@ -2,58 +2,47 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Animator animator;
-    public int maxHealth = 100;
-    public float attackCooldown = 1.5f; // Cooldown para el ataque especial
-    public float blockDuration = 0.5f; // Tiempo que tarda en iniciar el bloqueo
-    public Collider rightHandCollider; // Asigna el collider de la mano derecha
-
-    private int currentHealth;
+    private Animator animator;
     private bool isBlocking = false;
-    private bool canSpecialAttack = true;
+    private int currentHealth = 100;
+
+    [SerializeField] private float blockDuration = 2f; // Duración máxima de bloqueo
+    [SerializeField] private Collider rightHandCollider; // Asigna el collider de la mano derecha
 
     void Start()
     {
-        currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
 
-        // Asegurarse de que el collider está desactivado al inicio
-        if (rightHandCollider != null) rightHandCollider.enabled = false;
+        // Asegurar que el collider de la mano derecha esté desactivado al inicio
+        if (rightHandCollider != null)
+        {
+            rightHandCollider.enabled = false;
+        }
     }
 
     void Update()
     {
+        // Bloquear entradas si está en acción
+        if (animator.GetBool("InAction")) return;
+
         HandleInput();
     }
 
     private void HandleInput()
     {
-        // Ataque básico con la mano derecha
+        // Ataque básico
         if (Input.GetMouseButtonDown(0))
         {
+            animator.SetBool("InAction", true);
             animator.SetTrigger("golpeDerecho");
-            EnableHandCollider();
-            Invoke("DisableHandCollider", 0.5f); // Desactivar el collider después del golpe
         }
 
         // Bloqueo
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1) && !isBlocking)
         {
-            if (!isBlocking)
-            {
-                isBlocking = true;
-                animator.SetBool("isBlocking", true);
-                Invoke("StopBlocking", blockDuration);
-            }
-        }
-
-        // Ataque especial
-        if (Input.GetKeyDown(KeyCode.LeftControl) && canSpecialAttack)
-        {
-            canSpecialAttack = false;
-            animator.SetTrigger("patada");
-            EnableHandCollider();
-            Invoke("DisableHandCollider", 0.5f); // Desactivar el collider después del golpe especial
-            Invoke("ResetSpecialAttack", attackCooldown);
+            isBlocking = true;
+            animator.SetBool("isBlocking", true);
+            Invoke("StopBlocking", blockDuration); // Salir de bloqueo después de blockDuration
         }
     }
 
@@ -63,32 +52,26 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isBlocking", false);
     }
 
-    private void ResetSpecialAttack()
+    public void EndAction() // Llamado desde Animation Event al final de cada animación
     {
-        canSpecialAttack = true;
+        animator.SetBool("InAction", false);
     }
 
     public void TakeDamage(int damage)
     {
-        if (isBlocking)
-        {
-            Debug.Log("Ataque bloqueado!");
-            return;
-        }
+        if (isBlocking) return;
 
         currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
-            currentHealth = 0;
             animator.SetTrigger("muerte");
             Debug.Log("Jugador ha muerto");
-            // Detener movimientos o añadir lógica adicional aquí
         }
     }
 
-    // Métodos para activar/desactivar el collider
-    public void EnableHandCollider()
+    // Métodos para habilitar/deshabilitar el collider de la mano derecha
+    public void EnableHandCollider() // Llamar desde un Animation Event
     {
         if (rightHandCollider != null)
         {
@@ -97,7 +80,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void DisableHandCollider()
+    public void DisableHandCollider() // Llamar desde un Animation Event
     {
         if (rightHandCollider != null)
         {
@@ -105,5 +88,4 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Collider de la mano desactivado.");
         }
     }
-
 }
