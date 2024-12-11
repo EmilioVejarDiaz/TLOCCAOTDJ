@@ -64,9 +64,13 @@ public class BossController : MonoBehaviour
         }
     }
 
+    [SerializeField] private GameObject victoryScreen; // Pantalla de victoria
+
     private void Die()
     {
         animator.SetTrigger("muerte");
+        Debug.Log("El jefe ha muerto. ¡Juego completado!");
+        victoryScreen.SetActive(true);
         Destroy(gameObject, 3f);
     }
 

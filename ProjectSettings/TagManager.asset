@@ -7,6 +7,8 @@ TagManager:
   - CinemachineTarget
   - Enemy
   - PlayerHand
+  - Door
+  - Boss
   layers:
   - Default
   - TransparentFX
